@@ -1,9 +1,13 @@
+{% extends base.html %}
+{% block title %}افزودن مطلب{% end %}
+{% block content %}
 <table class="table">
     <tbody>
         {% for article in articles %}
         <tr>
-            <td>{{ article[1] }}</td>
+            <td>{{ article[0] }}</td>
         </tr>
         {% end %}
     </tbody>
 </table>
+{% end %}

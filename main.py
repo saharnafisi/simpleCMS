@@ -13,17 +13,17 @@ class MainHandler(tornado.web.RequestHandler):
         articles=cursor.execute(query)
         self.render("mainPage.html",articles=articles)
 
-        
+
 class AddArticle(tornado.web.RequestHandler):
     def get(self):
         self.render("addArticle.html")
     def post(self):
-        id1=self.get_argument("id")
+        article_id=self.get_argument("id")
         title=self.get_argument("title")
         content=self.get_argument("content")
         query="insert into 'article' values(?,?,?)"
         cursor=self.application.db.cursor()
-        cursor.execute(query,[id1,title,content])
+        cursor.execute(query,[article_id,title,content])
         self.application.db.commit()
         self.redirect("addArticle")
 
