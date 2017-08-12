@@ -6,6 +6,10 @@ import sqlite3
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
+        self.render("base.html")
+
+class AddArticle(tornado.web.RequestHandler):
+    def get(self):
         self.render("addArticle.html")
 
 
@@ -17,6 +21,7 @@ if __name__ == "__main__":
 
     app = tornado.web.Application([
         (r"/", MainHandler),
+        (r"/addArticle",AddArticle),
     ], **settings)
 
     app.db = sqlite3.connect("site.db")
