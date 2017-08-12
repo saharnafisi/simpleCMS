@@ -6,7 +6,7 @@ import sqlite3
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render("base.html")
+        self.render("addArticle.html")
 
 
 if __name__ == "__main__":
