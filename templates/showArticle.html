@@ -1,15 +1,20 @@
 {% extends base.html %}
 {% block title %}نمایش مطلب{% end %}
 {% block content %}
-<table class="table">
+<table class="table table-bordered">
     <tbody>
         <tr>
-            <td>{{ article[0] }}</td>
-            <td>{{ article[1] }}</td>
-            <td>{{ article[2] }}</td>
+            <td>{{ article[0] }}</td><br />
+            <td>{{ article[1] }}</td><br />
+            <td>{{ article[2] }}</td><br />
         </tr>
     </tbody>
 </table>
-<a href="/deleteArticle/{{ article[0] }}">حذف مطلب</a>
-<a>ویرایش مطلب</a>
+<form method="get" action="/deleteArticle/{{ article[0] }}">
+    <button class="btn btn-danger" type="submit">حذف مطلب</button>
+</form>
+<br />
+<form method="get" action="/editArticle/{{ article[0] }}">
+    <button class="btn btn-primary" type="submit">ویرایش مطلب</button>
+</form>
 {% end %}

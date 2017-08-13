@@ -44,6 +44,24 @@ class DeleteArticle(tornado.web.RequestHandler):
         self.application.db.commit()
         self.redirect("/")
 
+class UpdateArticle(tornado.web.RequestHandler):
+    def get(self,article_id):
+        query="SELECT * FROM 'article' WHERE id=?"
+        cursor=self.application.db.cursor()
+        cursor.execute(query,[article_id])
+        self.application.db.commit()
+        article=cursor.fetchone()
+        self.render("editArticle.html",article=article)
+
+    def post(self,article_id):
+        #article_id=self.get_argument("id")
+        title=self.get_argument("title")
+        content=self.get_argument("content")
+        query="UPDATE 'article' SET title=?, text=? WHERE id=?"
+        cursor=self.application.db.cursor()
+        cursor.execute(query,[title,content,article_id])
+        self.application.db.commit()
+        self.redirect("/")
 
 
 if __name__ == "__main__":
@@ -56,7 +74,8 @@ if __name__ == "__main__":
         (r"/", MainHandler),
         (r"/addArticle",AddArticle),
         (r"/articles/([a-zA-Z0-9]+)",ShowArticle),
-        (r"/deleteArticle/([a-zA-Z0-9]+)",DeleteArticle)
+        (r"/deleteArticle/([a-zA-Z0-9]+)",DeleteArticle),
+        (r"/editArticle/([a-zA-Z0-9]+)",UpdateArticle)
     ], **settings)
 
     app.db = sqlite3.connect("site.db")
