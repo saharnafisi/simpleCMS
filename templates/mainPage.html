@@ -5,7 +5,7 @@
     <tbody>
         {% for article in articles %}
         <tr>
-            <td>{{ article[0] }}</td>
+            <td><a href="/articles/{{ article[1] }}">{{ article[0] }}</a></td>
         </tr>
         {% end %}
     </tbody>

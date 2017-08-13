@@ -1,0 +1,15 @@
+{% extends base.html %}
+{% block title %}نمایش مطلب{% end %}
+{% block content %}
+<table class="table">
+    <tbody>
+        <tr>
+            <td>{{ article[0] }}</td>
+            <td>{{ article[1] }}</td>
+            <td>{{ article[2] }}</td>
+        </tr>
+    </tbody>
+</table>
+<a>حذف مطلب</a>
+<a>ویرایش مطلب</a>
+{% end %}
