@@ -36,6 +36,13 @@ class ShowArticle(tornado.web.RequestHandler):
         article=cursor.fetchone()
         self.render("showArticle.html",article=article)
 
+class DeleteArticle(tornado.web.RequestHandler):
+    def get(self,article_id):
+        query="DELETE FROM 'article' WHERE id=?"
+        cursor=self.application.db.cursor()
+        cursor.execute(query,[article_id])
+        self.application.db.commit()
+        self.redirect("/")
 
 
 
@@ -48,7 +55,8 @@ if __name__ == "__main__":
     app = tornado.web.Application([
         (r"/", MainHandler),
         (r"/addArticle",AddArticle),
-        (r"/articles/([a-zA-Z0-9]+)",ShowArticle)
+        (r"/articles/([a-zA-Z0-9]+)",ShowArticle),
+        (r"/deleteArticle/([a-zA-Z0-9]+)",DeleteArticle)
     ], **settings)
 
     app.db = sqlite3.connect("site.db")
