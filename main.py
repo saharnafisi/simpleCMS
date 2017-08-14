@@ -13,6 +13,20 @@ class MainHandler(tornado.web.RequestHandler):
         articles=cursor.execute(query)
         self.render("mainPage.html",articles=articles)
 
+class Login(tornado.web.RequestHandler):
+    def get(self):
+        self.render("login.html",message=None)
+    def post(self):
+        username=self.get_argument("userName")
+        password=self.get_argument("password")
+        query="SELECT * FROM 'user' WHERE userName=? AND password=?"
+        cursor=self.application.db.cursor()
+        cursor.execute(query,[username,password])
+        result=cursor.fetchone()
+        if not result:
+            self.render("login.html",message=True)
+        else:
+            self.redirect("/")
 
 class AddArticle(tornado.web.RequestHandler):
     def get(self):
@@ -67,11 +81,12 @@ class UpdateArticle(tornado.web.RequestHandler):
 if __name__ == "__main__":
     settings = {
         "static_path": os.path.join(os.path.dirname(__file__), "static"),
-        "template_path": os.path.join(os.path.dirname(__file__), "templates")
+        "template_path": os.path.join(os.path.dirname(__file__), "templates"),
     }
 
     app = tornado.web.Application([
         (r"/", MainHandler),
+        (r"/login",Login),
         (r"/addArticle",AddArticle),
         (r"/articles/([a-zA-Z0-9]+)",ShowArticle),
         (r"/deleteArticle/([a-zA-Z0-9]+)",DeleteArticle),
