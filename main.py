@@ -6,12 +6,15 @@ import sqlite3
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
-        query="SELECT title,id FROM 'article'"
-        cursor=self.application.db.cursor()
-        cursor.execute(query)
-        self.application.db.commit()
-        articles=cursor.execute(query)
-        self.render("mainPage.html",articles=articles)
+        if not self.get_cookie("user"):
+            self.redirect("/login")
+        else:
+            query="SELECT title,id FROM 'article'"
+            cursor=self.application.db.cursor()
+            cursor.execute(query)
+            self.application.db.commit()
+            articles=cursor.execute(query)
+            self.render("mainPage.html",articles=articles)
 
 class Login(tornado.web.RequestHandler):
     def get(self):
@@ -27,7 +30,7 @@ class Login(tornado.web.RequestHandler):
             self.render("login.html",message=True)
         else:
             self.redirect("/")
-
+            self.set_cookie("user",username)
 class AddArticle(tornado.web.RequestHandler):
     def get(self):
         self.render("addArticle.html")
