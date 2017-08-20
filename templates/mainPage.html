@@ -1,6 +1,10 @@
 {% extends base.html %}
-{% block title %}افزودن مطلب{% end %}
+{% block title %}صفحه اصلی{% end %}
 {% block content %}
+{% if AddArticleMessage !=None %}
+<br />
+<div class="alert alert-success">مطلب با موفقیت افزوده شد</div>
+{% end %}
 <table class="table">
     <tbody>
         {% for article in articles %}

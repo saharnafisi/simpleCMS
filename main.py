@@ -14,7 +14,7 @@ class MainHandler(tornado.web.RequestHandler):
             cursor.execute(query)
             self.application.db.commit()
             articles = cursor.execute(query)
-            self.render("mainPage.html", articles=articles)
+            self.render("mainPage.html", articles=articles,AddArticleMessage=None)
 
 
 class Login(tornado.web.RequestHandler):
@@ -46,7 +46,7 @@ class AddArticle(tornado.web.RequestHandler):
         cursor = self.application.db.cursor()
         cursor.execute(query, [article_id, title, content])
         self.application.db.commit()
-        self.redirect("addArticle")
+        self.render("mainPage.html",AddArticleMessage=True)
 
 
 class ShowArticle(tornado.web.RequestHandler):
