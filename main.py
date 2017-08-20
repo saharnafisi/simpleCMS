@@ -2,22 +2,35 @@ import tornado.web
 import tornado.ioloop
 import os
 import sqlite3
+import string
+import random
 
 
-class MainHandler(tornado.web.RequestHandler):
+def generateRandomString(lenght):
+    st=string.ascii_lowercase+string.digits+string.ascii_uppercase
+    return ''.join(random.sample(st,lenght))
+
+def selectArticles():
+    query = "SELECT title,id FROM 'article'"
+    cursor =app.db.cursor()
+    cursor.execute(query)
+    app.db.commit()
+    articles = cursor.execute(query)
+    return articles
+
+class BaseHandler(tornado.web.RequestHandler):
+    def get_secure_cookie(self):
+        return self.get_secure_cookie("user")
+
+
+
+class MainHandler(BaseHandler):
+    @tornado.web.authenticated
     def get(self):
-        if not self.get_cookie("user"):
-            self.redirect("/login")
-        else:
-            query = "SELECT title,id FROM 'article'"
-            cursor = self.application.db.cursor()
-            cursor.execute(query)
-            self.application.db.commit()
-            articles = cursor.execute(query)
-            self.render("mainPage.html", articles=articles,AddArticleMessage=None)
+            self.render("mainPage.html", articles=selectArticles(),AddArticleMessage=None)
 
 
-class Login(tornado.web.RequestHandler):
+class Login(BaseHandler):
     def get(self):
         self.render("login.html", message=None)
 
@@ -31,10 +44,11 @@ class Login(tornado.web.RequestHandler):
         if not result:
             self.render("login.html", message=True)
         else:
-            self.set_cookie("user","sahar")
+            self.set_secure_cookie("user",result[1])
             self.redirect("/")
 
-class AddArticle(tornado.web.RequestHandler):
+class AddArticle(BaseHandler):
+    @tornado.web.authenticated
     def get(self):
         self.render("addArticle.html")
 
@@ -46,10 +60,11 @@ class AddArticle(tornado.web.RequestHandler):
         cursor = self.application.db.cursor()
         cursor.execute(query, [article_id, title, content])
         self.application.db.commit()
-        self.render("mainPage.html",AddArticleMessage=True)
+        self.render("mainPage.html",articles=selectArticles(),AddArticleMessage=True)
 
 
-class ShowArticle(tornado.web.RequestHandler):
+class ShowArticle(BaseHandler):
+    @tornado.web.authenticated
     def get(self, article_id):
         query = "SELECT * FROM 'article' WHERE id=?"
         cursor = self.application.db.cursor()
@@ -59,7 +74,8 @@ class ShowArticle(tornado.web.RequestHandler):
         self.render("showArticle.html", article=article)
 
 
-class DeleteArticle(tornado.web.RequestHandler):
+class DeleteArticle(BaseHandler):
+    @tornado.web.authenticated
     def get(self, article_id):
         query = "DELETE FROM 'article' WHERE id=?"
         cursor = self.application.db.cursor()
@@ -68,7 +84,8 @@ class DeleteArticle(tornado.web.RequestHandler):
         self.redirect("/")
 
 
-class UpdateArticle(tornado.web.RequestHandler):
+class UpdateArticle(BaseHandler):
+    @tornado.web.authenticated
     def get(self, article_id):
         query = "SELECT * FROM 'article' WHERE id=?"
         cursor = self.application.db.cursor()
@@ -78,7 +95,6 @@ class UpdateArticle(tornado.web.RequestHandler):
         self.render("editArticle.html", article=article)
 
     def post(self, article_id):
-        # article_id=self.get_argument("id")
         title = self.get_argument("title")
         content = self.get_argument("content")
         query = "UPDATE 'article' SET title=?, text=? WHERE id=?"
@@ -92,6 +108,8 @@ if __name__ == "__main__":
     settings = {
         "static_path": os.path.join(os.path.dirname(__file__), "static"),
         "template_path": os.path.join(os.path.dirname(__file__), "templates"),
+        "login_url": "/login",
+        "cookie_secret":generateRandomString(50)
     }
 
     app = tornado.web.Application([
