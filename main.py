@@ -19,7 +19,7 @@ def selectArticles():
     return articles
 
 class BaseHandler(tornado.web.RequestHandler):
-    def get_secure_cookie(self):
+    def get_current_user(self):
         return self.get_secure_cookie("user")
 
 
@@ -52,6 +52,7 @@ class AddArticle(BaseHandler):
     def get(self):
         self.render("addArticle.html")
 
+    @tornado.web.authenticated
     def post(self):
         article_id = self.get_argument("id")
         title = self.get_argument("title")
@@ -94,6 +95,7 @@ class UpdateArticle(BaseHandler):
         article = cursor.fetchone()
         self.render("editArticle.html", article=article)
 
+    @tornado.web.authenticated
     def post(self, article_id):
         title = self.get_argument("title")
         content = self.get_argument("content")
