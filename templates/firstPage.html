@@ -1,0 +1,24 @@
+{% extends base.html %}{% block title %}سامانه مدیریت محتوا{% end %} {% block content %}
+<script>
+    function showSpeechs(){
+        var xhttp=new XMLHttpRequest();
+        xhttp.onreadystatechange=function(){
+            if(self.status==200 && self.readyState==4){
+                document.getElementById("demo").innerHTML="sahar";
+            }
+        }
+        xhttp.open("POST","/firstPage",true);
+        xhttp.send();
+}
+</script>
+<div class="container">
+    <form method="get">
+        <button class="btn btn-primary" type="submit">سخن بزرگان</button>
+    </form>
+    <br />
+    <form method="get" action="/">
+        <button class="btn btn-primary" onclick="showSpeechs()">صفحه اصلی</button>
+    </form>
+    <p id="demo"></p>
+</div>
+{% end %}
