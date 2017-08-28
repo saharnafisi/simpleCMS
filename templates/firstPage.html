@@ -8,16 +8,17 @@
             }
         }
         xhttp.open("POST","/firstPage",true);
-        xhttp.send();
-}
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send("sahaar");
+    }
 </script>
 <div class="container">
-    <form method="get">
-        <button class="btn btn-primary" type="submit">سخن بزرگان</button>
-    </form>
+        <button class="btn btn-primary" type="button" onclick="showSpeechs()">سخن بزرگان</button>
     <br />
+    <br />
+    
     <form method="get" action="/">
-        <button class="btn btn-primary" onclick="showSpeechs()">صفحه اصلی</button>
+        <button class="btn btn-primary">صفحه اصلی</button>
     </form>
     <p id="demo"></p>
 </div>

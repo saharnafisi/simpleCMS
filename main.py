@@ -26,6 +26,10 @@ class BaseHandler(tornado.web.RequestHandler):
 class firstPage(BaseHandler):
     @tornado.web.authenticated
     def get(self):
+        self.render("firstPage.html")
+
+    @tornado.web.authenticated
+    def post(self):
         query="select speech from 'speechs' order by random() limit 1"
         cursor=self.application.db.cursor()
         cursor.execute(query)
