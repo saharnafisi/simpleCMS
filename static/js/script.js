@@ -1,10 +1,11 @@
-function showSpeechs(){
-    var xhttp=new XMLHttpRequest();
-    xhttp.onreadystatechange(function(){
-        if(self.status==200 && self.readyState==4){
-            document.getElementById("demo").innerHTML="sahaar"
+function showSpeechs() {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.status == 200 && this.readyState == 4) {
+            document.getElementById("demo").innerHTML = this.responseText;
         }
-    })
-    xhttp.open("POST","/firstPage",true);
+    }
+    xhttp.open("GET", "/selectSpeech", true);
+    //xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send();
 }
