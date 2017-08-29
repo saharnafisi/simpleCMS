@@ -23,20 +23,14 @@ class BaseHandler(tornado.web.RequestHandler):
         return self.get_secure_cookie("user")
 
 
-class firstPage(BaseHandler):
+class selectSpeech(BaseHandler):
     @tornado.web.authenticated
     def get(self):
-        self.render("firstPage.html")
-
-    @tornado.web.authenticated
-    def post(self):
         query="select speech from 'speechs' order by random() limit 1"
         cursor=self.application.db.cursor()
         cursor.execute(query)
         speech=cursor.fetchone()
-        self.render("firstPage.html",speech=speech)
-
-
+        self.write(str(speech))
 
 class MainHandler(BaseHandler):
     @tornado.web.authenticated
@@ -59,7 +53,7 @@ class Login(BaseHandler):
             self.render("login.html", message=True)
         else:
             self.set_secure_cookie("user",result[1])
-            self.redirect("/firstPage")
+            self.redirect("/")
 
 class AddArticle(BaseHandler):
     @tornado.web.authenticated
@@ -131,7 +125,7 @@ if __name__ == "__main__":
     app = tornado.web.Application([
         (r"/", MainHandler),
         (r"/login", Login),
-        (r"/firstPage",firstPage),
+        (r"/selectSpeech",selectSpeech),
         (r"/addArticle", AddArticle),
         (r"/articles/([a-zA-Z0-9]+)", ShowArticle),
         (r"/deleteArticle/([a-zA-Z0-9]+)", DeleteArticle),

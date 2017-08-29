@@ -11,5 +11,10 @@ CREATE TABLE "user" (
 	`name`	VARCHAR(50),
 	PRIMARY KEY(`userName`)
 );
+CREATE TABLE `speechs` (
+	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`speech`	VARCHAR(200)
+	`speaker`   VARCHAR(20)
+);
 
 COMMIT;

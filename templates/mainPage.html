@@ -1,8 +1,7 @@
-{% extends base.html %}
-{% block title %}صفحه اصلی{% end %}
-{% block content %}
-{% if AddArticleMessage !=None %}
+{% extends base.html %} {% block title %}صفحه اصلی{% end %} {% block content %} {% if AddArticleMessage !=None %}
+
 <br />
+
 <div class="alert alert-success">مطلب با موفقیت افزوده شد</div>
 {% end %}
 <table class="table">
@@ -14,4 +13,21 @@
         {% end %}
     </tbody>
 </table>
+<button class="btn btn-primary" type="button" onclick="showSpeechs()">سخن بزرگان</button>
+<br />
+<br />
+<p id="demo"></p>
+<script>
+    function showSpeechs() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (self.status == 200 && self.readyState == 4) {
+                document.getElementById("demo").innerHTML = speech;
+            }
+        }
+        xhttp.open("GET", "/selectSpeech", true);
+        //xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send();
+    }
+</script>
 {% end %}
