@@ -4,19 +4,22 @@ import os
 import sqlite3
 import string
 import random
+import json
 
 
 def generateRandomString(lenght):
-    st=string.ascii_lowercase+string.digits+string.ascii_uppercase
-    return ''.join(random.sample(st,lenght))
+    st = string.ascii_lowercase + string.digits + string.ascii_uppercase
+    return ''.join(random.sample(st, lenght))
+
 
 def selectArticles():
     query = "SELECT title,id FROM 'article'"
-    cursor =app.db.cursor()
+    cursor = app.db.cursor()
     cursor.execute(query)
     app.db.commit()
     articles = cursor.execute(query)
     return articles
+
 
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
@@ -26,16 +29,24 @@ class BaseHandler(tornado.web.RequestHandler):
 class selectSpeech(BaseHandler):
     @tornado.web.authenticated
     def get(self):
-        query="select speech from 'speechs' order by random() limit 1"
-        cursor=self.application.db.cursor()
+        query = "select speech,speaker,source from 'speechs' order by random() limit 1"
+        cursor = self.application.db.cursor()
         cursor.execute(query)
-        speech=cursor.fetchone()
-        self.write(str(speech))
+        result = cursor.fetchone()
+        data = {
+            "speech": result[0],
+            "speaker": result[1],
+            "source": result[2]
+        }
+        json_data = json.dumps(data)
+        self.write(str(json_data))
+
 
 class MainHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
-            self.render("mainPage.html", articles=selectArticles(),AddArticleMessage=None)
+        self.render("mainPage.html", articles=selectArticles(),
+                    AddArticleMessage=None)
 
 
 class Login(BaseHandler):
@@ -52,8 +63,9 @@ class Login(BaseHandler):
         if not result:
             self.render("login.html", message=True)
         else:
-            self.set_secure_cookie("user",result[1])
+            self.set_secure_cookie("user", result[1])
             self.redirect("/")
+
 
 class AddArticle(BaseHandler):
     @tornado.web.authenticated
@@ -69,7 +81,8 @@ class AddArticle(BaseHandler):
         cursor = self.application.db.cursor()
         cursor.execute(query, [article_id, title, content])
         self.application.db.commit()
-        self.render("mainPage.html",articles=selectArticles(),AddArticleMessage=True)
+        self.render("mainPage.html", articles=selectArticles(),
+                    AddArticleMessage=True)
 
 
 class ShowArticle(BaseHandler):
@@ -119,13 +132,13 @@ if __name__ == "__main__":
         "static_path": os.path.join(os.path.dirname(__file__), "static"),
         "template_path": os.path.join(os.path.dirname(__file__), "templates"),
         "login_url": "/login",
-        "cookie_secret":generateRandomString(50)
+        "cookie_secret": generateRandomString(50)
     }
 
     app = tornado.web.Application([
         (r"/", MainHandler),
         (r"/login", Login),
-        (r"/selectSpeech",selectSpeech),
+        (r"/selectSpeech", selectSpeech),
         (r"/addArticle", AddArticle),
         (r"/articles/([a-zA-Z0-9]+)", ShowArticle),
         (r"/deleteArticle/([a-zA-Z0-9]+)", DeleteArticle),
