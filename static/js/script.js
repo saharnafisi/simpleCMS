@@ -18,10 +18,17 @@ function showSpeechs() {
 function addSpeech(){
     var xhttp=new XMLHttpRequest();
     var addSpeech;
+    var speech=document.getElementById("speech").value;
+    var speaker=document.getElementById('speaker').value;
+    var source=document.getElementById("source").value;
+    console.log(speech);
     xhttp.onreadystatechange=function(){
         if(this.status==200 && this.readyState==4){
             addSpeech=JSON.parse(this.responseText);
             document.getElementById("addSpeechMsg").innerHTML=addSpeech.message;
         }
     }
+    xhttp.open("POST", "/add-speech", true);
+    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhttp.send("speech="+speech+"&speaker="+speaker+"&source="+source);
 }

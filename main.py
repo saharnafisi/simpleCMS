@@ -49,13 +49,12 @@ class AddSpeech(BaseHandler):
         cursor=self.application.db.cursor()
         cursor.execute(query,[speech,speaker,source])
         self.application.db.commit()
-        """data={
+        data={
             "status":True,
             "message":"جمله شما با موفقیت افزوده شد",
         }
         json_data=json.dumps(data)
-        self.write(str(json.data))"""
-        self.write("sahaaar")
+        self.write(str(json_data))
 
 
 
