@@ -19,4 +19,17 @@
 <p id="demo1"></p>
 <p id="demo2"></p>
 <p id="demo3"></p>
+<div class="container">
+<form method="POST" action="/add-speech">
+    <legend>افزودن جمله</legend>
+    جمله:
+    <input type="text" id="speech"><br  />
+    گوینده جمله:
+    <input type="text" id="speecher"><br  />
+    منبع:
+    <input type="text" id="source"><br  />
+    <button type="submit" btn btn-primary>افزودن</button>
+</form>
+</div>
+<p id="addSpeechMsg"></p>
 {% end %}

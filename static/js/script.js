@@ -14,3 +14,14 @@ function showSpeechs() {
     //xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send();
 }
+
+function addSpeech(){
+    var xhttp=new XMLHttpRequest();
+    var addSpeech;
+    xhttp.onreadystatechange=function(){
+        if(this.status==200 && this.readyState==4){
+            addSpeech=JSON.parse(this.responseText);
+            document.getElementById("addSpeechMsg").innerHTML=addSpeech.message;
+        }
+    }
+}

@@ -27,7 +27,6 @@ class BaseHandler(tornado.web.RequestHandler):
 
 
 class selectSpeech(BaseHandler):
-    @tornado.web.authenticated
     def get(self):
         query = "select speech,speaker,source from 'speechs' order by random() limit 1"
         cursor = self.application.db.cursor()
@@ -41,9 +40,27 @@ class selectSpeech(BaseHandler):
         json_data = json.dumps(data)
         self.write(str(json_data))
 
+class AddSpeech(BaseHandler):
+    def post(self):
+        speech=self.get_argument("speech")
+        speaker=self.get_argument("speaker")
+        source=self.get_argument("source")
+        query="insert into speechs (speech,speaker,source) values (?,?,?)"
+        cursor=self.application.db.cursor()
+        cursor.execute(query,[speech,speaker,source])
+        self.application.db.commit()
+        """data={
+            "status":True,
+            "message":"جمله شما با موفقیت افزوده شد",
+        }
+        json_data=json.dumps(data)
+        self.write(str(json.data))"""
+        self.write("sahaaar")
+
+
+
 
 class MainHandler(BaseHandler):
-    @tornado.web.authenticated
     def get(self):
         self.render("mainPage.html", articles=selectArticles(),
                     AddArticleMessage=None)
@@ -72,7 +89,6 @@ class AddArticle(BaseHandler):
     def get(self):
         self.render("addArticle.html")
 
-    @tornado.web.authenticated
     def post(self):
         article_id = self.get_argument("id")
         title = self.get_argument("title")
@@ -81,9 +97,9 @@ class AddArticle(BaseHandler):
         cursor = self.application.db.cursor()
         cursor.execute(query, [article_id, title, content])
         self.application.db.commit()
-        self.render("mainPage.html", articles=selectArticles(),
-                    AddArticleMessage=True)
-
+        """self.render("mainPage.html", articles=selectArticles(),
+                    AddArticleMessage=True)"""
+        self.write("sahar")
 
 class ShowArticle(BaseHandler):
     @tornado.web.authenticated
@@ -132,13 +148,14 @@ if __name__ == "__main__":
         "static_path": os.path.join(os.path.dirname(__file__), "static"),
         "template_path": os.path.join(os.path.dirname(__file__), "templates"),
         "login_url": "/login",
-        "cookie_secret": generateRandomString(50)
+        "cookie_secret": "generateRandomString(50)"
     }
 
     app = tornado.web.Application([
         (r"/", MainHandler),
         (r"/login", Login),
         (r"/selectSpeech", selectSpeech),
+        (r"/add-speech",AddSpeech),
         (r"/addArticle", AddArticle),
         (r"/articles/([a-zA-Z0-9]+)", ShowArticle),
         (r"/deleteArticle/([a-zA-Z0-9]+)", DeleteArticle),
